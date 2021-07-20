@@ -33,7 +33,7 @@
     (unless (file-directory-p dir) (mkdir dir)))
 
 (defvar meq/var/cosmog-nibs-dir (concat user-emacs-directory ".cosmog."))
-(defvar meq/var/cosmog-nibs (directory-files meq/var/cosmog-nibs-dir))
+(defvar meq/var/cosmog-nibs (meq/remove-dot-dirs (directory-files meq/var/cosmog-nibs-dir)))
 (defvar meq/var/cosmog-update-timer nil)
 (defvar meq/var/cosmog-update-time "0 min 5 sec")
 (defvar meq/var/cosmog-idle-timer nil)
@@ -50,20 +50,27 @@
         (find-file nib) (org-mode) (meq/add-to-cosmog-nibs nib t)))
 
 ;;;###autoload
+(defun meq/cosmog-nib-p nil (interactive) (meq/substring ".cosmog." (buffer-file-name)))
+
+;;;###autoload
+(defmacro meq/when-cosmog-nib (&rest args)
+    `(if (not (meq/cosmog-nib-p))
+        (error "Buffer '%s' is not a .cosmog. nib!" (buffer-file-name))
+        ,@args))
+
+;;;###autoload
 (defun meq/delete-cosmog-nib nil (interactive)
-    (if (meq/substring ".cosmog." (buffer-file-name))
-        (meq/delete-current-buffer-file)
-        (error "Buffer '%s' is not a .cosmog. nib!" name)))
+    (meq/when-cosmog-nib
+        (delete (buffer-file-name) meq/var/cosmog-nibs)
+        (meq/delete-current-buffer-file)))
 
 ;;;###autoload
 (defun meq/rename-cosmog-nib nil (interactive)
-    (if (meq/substring ".cosmog." (buffer-file-name))
-        (meq/rename-current-buffer-file)
-        (error "Buffer '%s' is not a .cosmog. nib!" name)))
+    (meq/when-cosmog-nib (meq/rename-current-buffer-file)))
 
 ;;;###autoload
 (defun meq/update-cosmog-nibs (&optional nibs*) (interactive)
-    (let* ((nibs (or nibs* meq/var/cosmog-nibs)))
+    (let* ((nibs (meq/remove-dot-dirs (or nibs* meq/var/cosmog-nibs))))
         (mapc #'(lambda (nib) (interactive)
             (let* ((nib-buffer (get-file-buffer nib))) (when (buffer-modified-p nib-buffer)
                 (save-buffer nib-buffer)))) nibs)))
@@ -86,7 +93,7 @@
 
 ;;;###autoload
 (defun meq/load-nibs (&optional nibs*) (interactive)
-    (let* ((nibs (or nibs* meq/var/cosmog-nibs)))
+    (let* ((nibs (meq/remove-dot-dirs (or nibs* meq/var/cosmog-nibs))))
         ;; Adapted From:
         ;; Asnwer: https://emacs.stackexchange.com/a/9590/31428
         ;; User: https://emacs.stackexchange.com/users/4085/colin-fraizer
