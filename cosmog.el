@@ -27,12 +27,15 @@
 
 (require 'meq)
 (require 'org)
+(require 'dash)
 
 (let* ((dir (concat user-emacs-directory ".cosmog.")))
     (unless (file-directory-p dir) (mkdir dir)))
 
 (defvar meq/var/cosmog-nibs-dir (concat user-emacs-directory ".cosmog."))
-(defvar meq/var/cosmog-nibs (directory-files meq/var/cosmog-nibs-dir))
+(defvar meq/var/cosmog-nibs (--remove (or
+                                    (string= "." it)
+                                    (string= ".." it)) (directory-files meq/var/cosmog-nibs-dir)))
 (defvar meq/var/cosmog-update-timer nil)
 (defvar meq/var/cosmog-update-time "0 min 5 sec")
 (defvar meq/var/cosmog-idle-timer nil)
@@ -40,7 +43,7 @@
 
 ;;;###autoload
 (defun meq/add-to-cosmog-nibs (nib &optional no-find-file)
-    (unless no-find-file (find-file-noselect nib)) (add-to-list meq/var/cosmog-nibs nib))
+    (unless no-find-file (find-file-noselect nib)) (push nib meq/var/cosmog-nibs))
 
 ;;;###autoload
 (defun meq/create-cosmog-nib (&optional nib*) (interactive)
