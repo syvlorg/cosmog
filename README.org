@@ -1,0 +1,105 @@
+#!/usr/bin/env mdsh
+#+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
+#+startup: show3levels
+
+* cosmog
+
+#+begin_src emacs-lisp :tangle cosmog.el
+;;; cosmog.el --- a simple package                     -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021  Jeet Ray
+
+;; Author: Jeet Ray <aiern@protonmail.com>
+;; Keywords: lisp
+;; Version: 0.0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Put a description of the package here
+
+;;; Code:
+
+(require 'meq)
+(require 'org)
+
+(let* ((dir (concat user-emacs-directory ".cosmog.")))
+    (unless (file-directory-p dir) (mkdir dir)))
+
+(defvar meq/var/cosmog-nibs-dir (concat user-emacs-directory ".cosmog."))
+(defvar meq/var/cosmog-nibs (directory-files meq/var/cosmog-nibs-dir))
+(defvar meq/var/cosmog-update-timer nil)
+(defvar meq/var/cosmog-update-time "0 min 5 sec")
+(defvar meq/var/cosmog-idle-timer nil)
+(defvar meq/var/cosmog-idle-time 5)
+
+;;;###autoload
+(defun meq/add-to-cosmog-nibs (nib &optional no-find-file)
+    (unless no-find-file (find-file-noselect nib)) (add-to-list meq/var/cosmog-nibs nib))
+
+;;;###autoload
+(defun meq/create-cosmog-nib (&optional nib*) (interactive)
+    (let* ((nib (or nib* (concat meq/var/cosmog-nibs-dir "/.cosmog." (meq/timestamp) "."))))
+        (find-file nib) (org-mode) (meq/add-to-cosmog-nibs nib t)))
+
+;;;###autoload
+(defun meq/delete-cosmog-nib nil (interactive)
+    (if (meq/substring ".cosmog." (buffer-file-name))
+        (meq/delete-current-buffer-file)
+        (error "Buffer '%s' is not a .cosmog. nib!" name)))
+
+;;;###autoload
+(defun meq/rename-cosmog-nib nil (interactive)
+    (if (meq/substring ".cosmog." (buffer-file-name))
+        (meq/rename-current-buffer-file)
+        (error "Buffer '%s' is not a .cosmog. nib!" name)))
+
+;;;###autoload
+(defun meq/update-cosmog-nibs (&optional nibs*) (interactive)
+    (let* ((nibs (or nibs* meq/var/cosmog-nibs)))
+        (mapc #'(lambda (nib) (interactive)
+            (let* ((nib-buffer (get-file-buffer nib))) (when (buffer-modified-p nib-buffer)
+                (save-buffer nib-buffer)))) nibs)))
+
+;;;###autoload
+(defun meq/cancel-cosmog-update-timer nil (interactive) (cancel-timer meq/var/cosmog-update-timer))
+;;;###autoload
+(defun meq/set-cosmog-update-timer nil (interactive)
+    (meq/update-cosmog-nibs)
+    (if (current-idle-time)
+        (setq meq/var/cosmog-update-timer
+            `(run-at-time ,meq/var/cosmog-update-time t #'meq/update-cosmog-nibs))
+        (meq/cancel-cosmog-update-timer)))
+
+;; Adapted From:
+;; Answer: https://emacs.stackexchange.com/a/10775/31428
+;; User: https://emacs.stackexchange.com/users/454/phils
+;;;###autoload
+(run-with-idle-timer meq/var/cosmog-idle-time t #'meq/set-cosmog-update-timer)
+
+;;;###autoload
+(defun meq/load-nibs (&optional nibs*) (interactive)
+    (let* ((nibs (or nibs* meq/var/cosmog-nibs)))
+        ;; Adapted From:
+        ;; Asnwer: https://emacs.stackexchange.com/a/9590/31428
+        ;; User: https://emacs.stackexchange.com/users/4085/colin-fraizer
+        (mapc #'meq/add-to-cosmog-nibs nibs)))
+
+;;;###autoload
+(add-hook 'emacs-startup-hook #'meq/load-nibs)
+
+(provide 'cosmog)
+;;; cosmog.el ends here
+#+end_src
