@@ -73,7 +73,9 @@
 
 ;;;###autoload
 (defun meq/rename-cosmog-nib nil (interactive)
-    (meq/when-cosmog-nib (meq/rename-current-buffer-file)))
+    (meq/when-cosmog-nib
+        (delete (buffer-file-name) meq/var/cosmog-nibs)
+        (meq/rename-current-buffer-file)))
 
 ;;;###autoload
 (defun meq/update-cosmog-nibs (&optional nibs*) (interactive)
