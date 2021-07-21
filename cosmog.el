@@ -28,6 +28,8 @@
 (require 'meq)
 (require 'org)
 (require 'dash)
+(require 'deino)
+(require 'alloy)
 
 (let* ((dir (concat user-emacs-directory ".cosmog.")))
     (unless (file-directory-p dir) (mkdir dir)))
@@ -74,7 +76,9 @@
 (defun meq/update-cosmog-nibs (&optional nibs*) (interactive)
     (let* ((nibs (meq/remove-dot-dirs (or nibs* meq/var/cosmog-nibs))))
         (mapc #'(lambda (nib) (interactive)
-            (let* ((nib-buffer (get-file-buffer nib))) (when (buffer-modified-p nib-buffer)
+            (let* ((nib-buffer (get-file-buffer nib))) (when (and
+                                                                (buffer-modified-p nib-buffer)
+                                                                (meq/cosmog-nib-p))
                 (save-buffer nib-buffer)))) nibs)))
 
 ;;;###autoload
@@ -103,6 +107,18 @@
 
 ;;;###autoload
 (add-hook 'emacs-startup-hook #'meq/load-nibs)
+
+(defdeino deino-cosmog (:color blue)
+    ("`" nil "cancel")
+    ("c" meq/create-cosmog-nib "create")
+    ("d" meq/delete-cosmog-nib "delete" :color red)
+    ("r" meq/rename-cosmog-nib "rename")
+    ("t" deino-cosmog/timer/body "timers"))
+(defdeino deino-cosmog/timer (:color blue)
+    ("`" nil "quit")
+    ("c" meq/cancel-cosmog-update-timer "cancel")
+    ("s" meq/set-cosmog-update-timer "set"))
+(alloy-def :keymaps demon-run (alloy-chord ":\"") 'deino-cosmog/body)
 
 (provide 'cosmog)
 ;;; cosmog.el ends here
