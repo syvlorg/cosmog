@@ -115,13 +115,13 @@
 ;;;###autoload
 (add-hook 'emacs-startup-hook #'meq/load-nibs)
 
-(defdeino deino-cosmog (:color blue)
+(defdeino deino-cosmog (:color blue) "; c c"
     ("`" nil "cancel")
     ("c" meq/create-cosmog-nib "create")
     ("d" meq/delete-cosmog-nib "delete" :color red)
     ("r" meq/rename-cosmog-nib "rename")
     ("t" deino-cosmog/timer/body "timers"))
-(defdeino deino-cosmog/timer (:color blue)
+(defdeino deino-cosmog/timer (:color blue) "; c t"
     ("`" nil "quit")
     ("c" meq/cancel-cosmog-update-timer "cancel")
     ("s" meq/set-cosmog-update-timer "set"))
