@@ -119,7 +119,6 @@
     ("c" meq/cancel-cosmog-update-timer "cancel")
     ("s" meq/set-cosmog-update-timer "set"))
 (defdeinor+ "; c" "cosmog")
-(alloy-def :keymaps demon-run (alloy-chord ":\"") 'deino-cosmog/body)
 
 (provide 'cosmog)
 ;;; cosmog.el ends here
