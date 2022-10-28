@@ -1,11 +1,50 @@
-* cosmog
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-10-28 Fri 00:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="author" content="Jeet Ray" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://combinatronics.io/sylvorg/settings/main/src/styles/primary/syvl.css" />
+<link rel="icon" href="https://combinatronics.io/sylvorg/settings/main/src/icons/favicons/shiny-zigzagoon-galar.ico" sizes="any" />
+<link rel="icon" href="https://combinatronics.io/sylvorg/settings/main/src/icons/favicons/shiny-zigzagoon-galar.svg" />
+<link rel="manifest" href="https://combinatronics.io/sylvorg/settings/main/manifest.json" />
+<link rel="stylesheet" type="text/css" href="https://combinatronics.io/sylvorg/settings/main/src/styles/highlight/paraiso-dark.min.css" />
+<script src="https://combinatronics.io/sylvorg/settings/main/src/scripts/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<div class="header">
+<h1>We Are Syvlorg.</h1>
+<a href="">About Me</a>
+<a href="">About This Website</a>
+<a href="">About Syvlorg</a>
+<a href="https://resume.syvl.org">Résumé</a>
+<a href="https://index.syvl.org">Index</a>
+</div>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf33b95f">cosmog</a></li>
+</ul>
+</div>
+</div>
 
-#+begin_src emacs-lisp :tangle cosmog.el
-;;; cosmog.el --- a simple package                     -*- lexical-binding: t; -*-
+<div id="outline-container-orgf33b95f" class="outline-2">
+<h2 id="orgf33b95f">cosmog</h2>
+<div class="outline-text-2" id="text-orgf33b95f">
+<div class="org-src-container">
+<pre><code class="language-lisp match-braces rainbow-braces">;;; cosmog.el --- a simple package                     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Jeet Ray
 
-;; Author: Jeet Ray <aiern@protonmail.com>
+;; Author: Jeet Ray &lt;aiern@protonmail.com&gt;
 ;; Keywords: lisp
 ;; Version: 0.0.1
 
@@ -20,7 +59,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
 ;;; Commentary:
 
@@ -47,12 +86,12 @@
 (defvar meq/var/cosmog-idle-time 5)
 
 ;;;###autoload
-(defun meq/add-to-cosmog-nibs (nib &optional no-find-file)
+(defun meq/add-to-cosmog-nibs (nib &amp;optional no-find-file)
     (unless no-find-file (find-file-noselect nib))
     (unless (or (string= nib ".") (string= nib "..")) (push nib meq/var/cosmog-nibs)))
 
 ;;;###autoload
-(defun meq/create-cosmog-nib (&optional nib*) (interactive)
+(defun meq/create-cosmog-nib (&amp;optional nib*) (interactive)
     (let* ((nib (or nib* (concat meq/var/cosmog-nibs-dir "/.cosmog." (meq/timestamp) "."))))
         (find-file nib) (org-mode) (meq/add-to-cosmog-nibs nib t)))
 
@@ -60,7 +99,7 @@
 (defun meq/cosmog-nib-p nil (interactive) (meq/substring ".cosmog." (buffer-file-name)))
 
 ;;;###autoload
-(defmacro meq/when-cosmog-nib (&rest args)
+(defmacro meq/when-cosmog-nib (&amp;rest args)
     `(if (not (meq/cosmog-nib-p))
         (error "Buffer '%s' is not a .cosmog. nib!" (buffer-file-name))
         ,@args))
@@ -78,7 +117,7 @@
         (meq/rename-current-buffer-file)))
 
 ;;;###autoload
-(defun meq/update-cosmog-nibs (&optional nibs*) (interactive)
+(defun meq/update-cosmog-nibs (&amp;optional nibs*) (interactive)
     (let* ((nibs (meq/remove-dot-dirs (or nibs* meq/var/cosmog-nibs))))
         (mapc #'(lambda (nib) (interactive)
             (let* ((nib-buffer (get-file-buffer nib))) (when (and
@@ -103,7 +142,7 @@
 (run-with-idle-timer meq/var/cosmog-idle-time t #'meq/set-cosmog-update-timer)
 
 ;;;###autoload
-(defun meq/load-nibs (&optional nibs*) (interactive)
+(defun meq/load-nibs (&amp;optional nibs*) (interactive)
     (let* ((nibs (meq/remove-dot-dirs (or nibs* meq/var/cosmog-nibs))))
         ;; Adapted From:
         ;; Asnwer: https://emacs.stackexchange.com/a/9590/31428
@@ -127,4 +166,15 @@
 
 (provide 'cosmog)
 ;;; cosmog.el ends here
-#+end_src
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Jeet Ray</p>
+<p class="date">Created: 2022-10-28 Fri 00:13</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

@@ -30,7 +30,6 @@
 (require 'dash)
 (require 'f)
 (require 'deino)
-(require 'alloy)
 
 (let* ((dir (meq/ued ".cosmog.")))
     (unless (file-directory-p dir) (mkdir dir)))
@@ -40,6 +39,8 @@
 (defvar meq/var/cosmog-update-timer nil)
 (defvar meq/var/cosmog-update-time "0 min 5 sec")
 (defvar meq/var/cosmog-idle-timer nil)
+
+;;;###autoload
 (defvar meq/var/cosmog-idle-time 5)
 
 ;;;###autoload
